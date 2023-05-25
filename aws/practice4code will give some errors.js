@@ -57,7 +57,7 @@ const createbucket=async()=>{
                       const fileParams={
                            Bucket:"mypracticebucket1125",
                            Key:"index.txt",
-                           ContentType:"application/text",
+                           ContentType:"text/plain",
                            Body:"hello everyOne"
                       }
                       s3.upload(fileParams,(err,data)=>{
