@@ -1,62 +1,79 @@
 const aws = require("aws-sdk");
 
 aws.config.update({
-  accessKeyId:,
-  secretAccessKey:,
 });
 
 const s3 = new aws.S3();
 
-const createBucket = async () => {
-//   const params = {
-//     Bucket: "practice4bucket1125",
-//     ACL:"private",
-//     ObjectLockEnabledForBucket:true,
-//     CreateBucketConfiguration: {
-//       LocationConstraint: "ap-south-1"
-//     },
 
-//     ObjectOwnership: "BucketOwnerPreferred",
-//   };
-
-//   s3.createBucket(params, (err, data) => {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       console.log(data.Location);
-//     }
-//   });
-
-
-      s3.createBucket({
-        Bucket: "mylastandfirstbucket0f2023",
-        ACL: 'public-read',
-        CreateBucketConfiguration: {
-          LocationConstraint: 'us-east-1'
-        }
-      }, (err, data) => {
-        if (err) {
-          console.log('Error creating bucket:', err);
-        } else {
-          console.log('Bucket created successfully',data.Location)
-          s3.putPublicAccessBlock({
-            Bucket: "mylastandfirstbucket0f2023",
-            PublicAccessBlockConfiguration: {
-              BlockPublicAcls: false,
-              BlockPublicPolicy: false,
-              IgnorePublicAcls: false,
-              RestrictPublicBuckets: false
+const createbucket=async()=>{
+       const params={
+          Bucket:"mypracticebucket1125",
+          CreateBucketConfiguration:{
+              LocationConstraint:"ap-south-1"
+          }
+       }
+     
+        s3.createBucket(params,(err,data)=>{
+            if(err){
+              console.log(err)
+            }else{
+              const publicparams={
+                Bucket:"mypracticebucket1125",
+                PublicAccessBlockConfiguration:{
+                 BlockPublicAcls:false,
+                 IgnorePublicAcls:false,
+                 BlockPublicPolicy:false,
+                 RestrictPublicBuckets:false
+                }
             }
-          }, (err, data) => {
-            if (err) {
-              console.log('Error updating Block Public Access:', err);
-            } else {
-              console.log('Block Public Access configuration updated successfully')
-            
-        }
-      });
-    }
+          s3.putPublicAccessBlock(publicparams,(err,data)=>{
+               if(err){
+                  console.log(err)
+               }else{
+                const policyparams={
+                  Bucket:"mypracticebucket1125",
+                  Policy:`{
+                   "Version": "2012-10-17",
+                   "Id": "Policy1684993526701",
+                   "Statement": [
+                       {
+                           "Sid": "Stmt1684993525630",
+                           "Effect": "Allow",
+                           "Principal": "*",
+                           "Action": [
+                               "s3:GetObject",
+                               "s3:PutObject"
+                           ],
+                           "Resource": "arn:aws:s3:::mypracticebucket1125/*"
+                       }
+                   ]
+               }`
+              }
+              s3.putBucketPolicy(policyparams,(err,data)=>{
+                 if(err){
+                    console.log(err)
+                 }else{
+                      const fileParams={
+                           Bucket:"mypracticebucket1125",
+                           Key:"index.txt",
+                           ContentType:"application/text",
+                           Body:"hello everyOne"
+                      }
+                      s3.upload(fileParams,(err,data)=>{
+                        if(err){ 
+                           console.log(err)
+                        }else{
+                           console.log(data.Location)
+                        }
+                      })
+                 }
+              })
+            }
+        })
+               }
+             })
+              
+}
 
-})
-} 
-createBucket()
+createbucket()
