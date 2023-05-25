@@ -2,8 +2,8 @@ const aws = require("aws-sdk");
 const fs = require("fs");
 const mime=require("mime")
 aws.config.update({
-  accessKeyId: "AKIAUDKK2YOPXSVP4QC7",
-  secretAccessKey: "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",
+  accessKeyId:,
+  secretAccessKey:,
 });
 
 const s3 = new aws.S3();
